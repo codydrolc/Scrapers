@@ -1,8 +1,12 @@
 #-------------------------------------------------------------------------------
 #---- Scrape Congress.gov nominations data
-# Created: 6/22/2018
+# Created: 6/21/2018
+# Modified: 6/22/2018
 
 # Note: This function is still VERY much in development!
+
+# Major issue: Not all nominee names are contained in a single table. The current
+# function does not handle/parse multiple tables well.
 
 # Load packages
 library(rvest); library(tidyverse)
@@ -18,14 +22,19 @@ pullnomz <- function(cong, pn) {
   description <- html_nodes(page, 'ul.plain.little_margin') %>% # Basic info
     html_text() %>% 
     str_replace_all("[\r\n]" , "")
+  if(length(description) == 3) { # Some pages have limited information; committee and final/latest action tend to be missing
+    nominee_description <- description[[1]]
+    organization <- description[[2]]
+    rcvd_president <- description[[3]]
+  } else{ 
   nominee_description <- description[[1]]
   organization <- description[[2]]
   latest_action <- description[[3]]
   rcvd_president <- description[[4]]
   committee <- description[[5]]
-  confirmed <- if_else(str_detect(latest_action, "Confirmed"), 1, 0) # Final action has "Confirmed" in description
+  }
   nominee_names <- as.data.frame(html_table(page)) # Names of all nominees
-  if(ncol(nominee_names) > 1) { return(NA)
+  if(colnames(nominee_names)[[1]] != "Nominee") { return(NA)
   } else {
     return(nominee_data <- data.frame(title = title,
                                       nominee_description = nominee_description,
@@ -33,8 +42,7 @@ pullnomz <- function(cong, pn) {
                                       latest_action = latest_action,
                                       rcvd_president = rcvd_president,
                                       committee = committee, 
-                                      nominee_names = nominee_names, 
-                                      confirmed = confirmed))
+                                      nominee_names = nominee_names[, 1]))
   } # close if else
 } # close function
 
