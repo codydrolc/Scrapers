@@ -2,6 +2,8 @@
 #---- Scrape Congress.gov nominations data
 # Created: 6/22/2018
 
+# Note: This function is still VERY much in development!
+
 # Load packages
 library(rvest); library(tidyverse)
 
@@ -40,4 +42,4 @@ pullnomz <- function(cong, pn) {
 test <- pullnomz(98, 1)
 
 # 111 nominations
-test <- pullnomz(98, 1)
+test <- pullnomz(97, 1)
