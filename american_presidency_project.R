@@ -9,7 +9,7 @@
 library(rvest)     # Scraping
 library(tidyverse) # Cleaning data
 library(lubridate) # Cleaning dates
-library(tidytext)  # Sentiment analysis
+library(tidytext)  # Basic sentiment analysis
 
 # Build function that accepts document identifier
   
@@ -56,7 +56,7 @@ pullprez <- function(id) {
     sentiment$negative <- 0
     sentiment <- as.data.frame(sentiment)
   }
-  return(as_tibble(cbind(id, president, date, collection, title, text, sentiment, words = nrow(tokens))))
+  return(as.data.frame(cbind(id, president, date, collection, title, text, sentiment, words = nrow(tokens))))
 }
 
 # Test function
