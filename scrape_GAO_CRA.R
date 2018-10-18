@@ -1,26 +1,49 @@
 #-------------------------------------------------------------------------------
 #---- Scrape GAO Congressional Review Act data
 # Created: 1/17/2018
-# Modified: 9/6/2018
+# Modified: 10/18/2018
 
 # Note: GAO stores the bolded rule information in a single table on each page.
 # There is only one table on each page. So, parsing the html nodes only requires
 # taking "table" and nothing else. Converting the "table" from a list to a data
-# frame creates "long" format data that is reshaped at each iteration of the
-# loop. As a result, one row is added to the data frame at each iteration.
-# In addition, some rules have an "identification" variable, making base 
-# "rbind" unusable.
+# frame creates "long" format data that is reshaped by the function. As a result,
+# each time the function is pulled there will only be one row. 
 
-# The control number range given in the loop is much wider than it needs to be,
-# but the range ensures that every listed rule is captured. The loop will skip
-# unused control numbers and continue running, but may "choke" if the connection
-# with a page times out.
+# An example loop is provided that takes the universe of rules submitted
+# under the Congressional Review Act.
 
 #-------------------------------------------------------------------------------
-rm(list = ls())
 
 # Load packages
-library(rvest); library(plyr); library(tidyr); library(dplyr); library(lubridate)
+library(tidyverse); library(plyr)
+
+# Scraping function specific to the Government Accountability Office
+pull_cra <- function(cn) {
+  if(nchar(as.integer(cn)) != 6) {
+    stop("Control number must be 6 digits")
+  } else {
+    page <- read_html(paste0("https://www.gao.gov/fedrules/", cn)) # Fill control number
+    table <- html_table(page, fill = TRUE) # Find only number on page
+    if(length(table) == 0) { # No data if control number is not used
+      warning("No data found")
+      return(data.frame(control_number = cn,
+                        no_data = 1))
+    } else {
+      table <- table[[1]] %>% # Table to data frame
+        spread(X1, X2)
+      names <- colnames(table) %>% # Create acceptable names
+        str_remove_all(":|\\.|-") %>% 
+        str_replace_all(" ", "_") %>%
+        tolower()
+      names(table) <- names
+      return(table)
+    }
+  }
+}
+
+pull_cra(123) # Should stop
+pull_cra(123456) # No warnings
+pull_cra(200000) # Warning that there is no data
 
 # Null object to fill
 cra <- NULL
@@ -28,25 +51,16 @@ cra <- NULL
 # Loop over control numbers
 # The range pulls the "universe" of federal rules (~76,000) submitted to GAO
 for (i in 100000:200000) {
-  print(i) # Show iteration
-  url <- paste0("https://www.gao.gov/fedrules/", i) # Fill control number
-  read_page <- read_html(url) # Import page
-  table <- html_table(read_page, fill = TRUE) # Find only table on page
-  if (length(table) == 0) next # Skip if empty
-  table <- table[[1]] # Table to data frame
-  table <- spread(table, X1, X2) # Convert long to wide (agency, sub-agency, etc. to variable names)
-  cra <- rbind.fill(cra, table) # Combine iterations
+  print(i)
+  bind <- pull_cra(i)
+  cra <- rbind.fill(cra, bind) # Combine iterations
 }
 
-# Rename columns
-names(cra) <- sub(":", "", names(cra))
+# Removing rows where the control number returned no data
+cra <- cra %>% filter(no_data != 1) %>% select(-no_data)
 
 # Convert dates
-cra$Received <- mdy(cra$Received)
-cra$Effective <- mdy(cra$Effective) # Might be missing
-cra$Published <- mdy(cra$Published) # Might be missing
-cra <- arrange(cra$Received)
-
-# Reorder columns
-cra <- select(cra, Agency, `Sub-Agency`, Type, Description, Priority, 
-  Effective, Received, Published, `Fed. Reg. Number`)
+cra$received <- mdy(cra$received)
+cra$effective <- mdy(cra$effective) # Might be missing
+cra$published <- mdy(cra$published) # Might be missing
+cra <- arrange(cra$received)
