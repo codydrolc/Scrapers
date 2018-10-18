@@ -6,9 +6,7 @@
 # create a corpus.
 
 # Packages
-library(rvest)     # Scraping
-library(tidyverse) # Cleaning data
-library(lubridate) # Cleaning dates
+library(tidyverse) # Cleaning data and dates
 library(tidytext)  # Basic sentiment analysis
 
 # Build function that accepts document identifier
