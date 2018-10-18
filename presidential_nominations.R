@@ -9,7 +9,7 @@
 # function does not handle/parse multiple tables well.
 
 # Load packages
-library(rvest); library(tidyverse)
+library(tidyverse)
 
 # Scraping function
 # Congress.gov data run from 1981 (the 97th Congress) to the present
