@@ -5,6 +5,8 @@
 # statements. It relies on UCSB's The American Presidency Project (APP) to 
 # create a corpus.
 
+# This function was recently updated to work with the website overhaul.
+
 # Build function that accepts document identifier
 
 pullprez <- function(id) {
@@ -18,26 +20,31 @@ pullprez <- function(id) {
   try( # Don't crash if there is an error
     data <- read_html(url, encoding = encoding$encoding[1]) # Encoding with highest probability
   )
-  title <- data %>%        # Page title
+  title <- data %>%             # Page title
     html_node('div.field-ds-doc-title') %>%
     html_text()
-  date <- data %>%         # Page date
+  date <- data %>%              # Page date
     html_node('span.date-display-single') %>%
     html_text() %>%
     mdy() %>%
     as.character()
-  president <- data %>%   # President
+  president <- data %>%         # President
     html_node('div.field-title') %>%
+    html_text() 
+  press_secretary <- data %>%   # Press Secretary indicator
+    html_node("div.group-meta") %>%
     html_text() %>%
-    paste(collapse = ' ')
+    str_detect("Press Secretary")
+  press_secretary <- if_else(press_secretary == TRUE, 1, 0)
   text <- data %>%        # Page text
     html_nodes('div.field-docs-content') %>%
-    html_text() %>%
-    paste(collapse = ' ')
+    html_text() 
   #--- Word count from document
   tokens <- data_frame(text = text) %>% unnest_tokens(word, text)
-  return(as.data.frame(cbind(id, date, president, title, text, words = nrow(tokens))))
+  return(as.data.frame(cbind(id, date, president, press_secretary, title, text, words = nrow(tokens))))
 }
 
 # Test function
 function.test <- pullprez(266619)
+function.test <- pullprez(262123)
+function.test <- pullprez(286030)
