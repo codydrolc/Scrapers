@@ -39,12 +39,12 @@ pullprez <- function(id) {
   vice_president <- data %>%    # Vice President
     html_node("div.group-meta") %>%
     html_text() %>%
-    str_detect("Press")
+    str_detect("Vice President")
   vice_president <- if_else(vice_president == TRUE, 1, 0)
   first_lady <- data %>%        # First Lady
     html_node("div.group-meta") %>%
     html_text() %>%
-    str_detect("Press")
+    str_detect("First Lady")
   first_lady <- if_else(first_lady == TRUE, 1, 0)
   text <- data %>%              # Page text
     html_nodes('div.field-docs-content') %>%
