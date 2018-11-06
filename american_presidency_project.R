@@ -36,12 +36,23 @@ pullprez <- function(id) {
     html_text() %>%
     str_detect("Press Secretary")
   press_secretary <- if_else(press_secretary == TRUE, 1, 0)
-  text <- data %>%        # Page text
+  vice_president <- data %>%    # Vice President
+    html_node("div.group-meta") %>%
+    html_text() %>%
+    str_detect("Press")
+  vice_president <- if_else(vice_president == TRUE, 1, 0)
+  first_lady <- data %>%        # First Lady
+    html_node("div.group-meta") %>%
+    html_text() %>%
+    str_detect("Press")
+  first_lady <- if_else(first_lady == TRUE, 1, 0)
+  text <- data %>%              # Page text
     html_nodes('div.field-docs-content') %>%
     html_text() 
   #--- Word count from document
   tokens <- data_frame(text = text) %>% unnest_tokens(word, text)
-  return(as.data.frame(cbind(id, date, president, press_secretary, title, text, words = nrow(tokens))))
+  return(as.data.frame(cbind(id, date, president, press_secretary, vice_president, 
+    first_lady, title, text, words = nrow(tokens))))
 }
 
 # Test function
