@@ -15,7 +15,7 @@
 #-------------------------------------------------------------------------------
 
 # Load packages
-library(tidyverse); library(plyr)
+library(tidyverse); library(rvest); library(lubridate); library(plyr)
 
 # Scraping function specific to the Government Accountability Office
 pull_cra <- function(cn) {
