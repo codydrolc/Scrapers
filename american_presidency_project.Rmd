@@ -2,7 +2,7 @@
 title: "Scrape the Public Papers of the Presidents: The American Presidency Project"
 author: "Cody A. Drolc"
 Date: "November 7, 2018"
-output: html_document
+output: rmarkdown::github_document
 ---
 
 ```{r setup, include = FALSE}
