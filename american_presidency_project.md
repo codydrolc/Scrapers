@@ -83,7 +83,7 @@ library(furrr)
 plan(multisession) # For Windows
 possibly_pullprez <- possibly(pullprez, otherwise = NULL) # Keep mapping if error
 
-app <- bind_rows(future_map(200000:350000, possibly_pullprez))
+app <- bind_rows(future_map(200000:350000, possibly_pullprez, .progress = T))
 ```
 
 Caution! Running over what *I think* is the universe of public paper identifiers will take some time.
