@@ -69,10 +69,11 @@ What if I want all the rules reported under the Congressional Review Act? By mak
 
 ``` r
 # Create data frame of rules under CRA
-library(furrr)
+library(furrr); library(purrr)
 plan(multisession) # For Windows
+possibly_pull_cra <- possibly(pull_cra, otherwise = NULL) # Keep mapping even if error
 
-cra <- rbind.fill(future_map(100000:200000, pull_cra, .progress = T))
+cra <- rbind.fill(future_map(100000:200000, possibly_pull_cra, .progress = T))
 ```
 
 Caution! Running over what *I think* is the universe of control numbers will take some time.
