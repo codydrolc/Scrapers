@@ -83,7 +83,7 @@ Caution! Running over what *I think* is the universe of control numbers will tak
 
 # Removing rows where the control number returned no data
 cra <- cra %>% 
-  filter(no_data != 1) %>% 
+  filter(is.na(no_data)) %>% 
   select(-no_data) %>%
   # Convert dates
   mutate(received = mdy(received),
