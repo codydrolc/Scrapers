@@ -89,5 +89,5 @@ cra <- cra %>%
   mutate(received = mdy(received),
          effective = mdy(effective),     # Might be missing
          published = mdy(published)) %>% # Might be missing
-  arrange(recieved)
+  arrange(received)
 ```
