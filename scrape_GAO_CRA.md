@@ -76,7 +76,7 @@ possibly_pull_cra <- possibly(pull_cra, otherwise = NULL) # Keep mapping even if
 cra <- rbind.fill(future_map(100000:200000, possibly_pull_cra, .progress = T))
 ```
 
-Caution! Running over what *I think* is the universe of control numbers will take some time.
+Caution! Running over what *I think* is the universe of control numbers will take some time. It took about four hours to iterate through all control numbers across eight cores and a relatively slow internet connection.
 
 ``` r
 # Clean up a little bit
