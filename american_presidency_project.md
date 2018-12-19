@@ -79,7 +79,7 @@ What if I want all the public papers? Well, you're in luck! By making a few assu
 
 ``` r
 # Create data frame of public papers
-library(furrr)
+library(furrr); library(purrr)
 plan(multisession) # For Windows
 possibly_pullprez <- possibly(pullprez, otherwise = NULL) # Keep mapping if error
 
