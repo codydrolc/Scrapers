@@ -2,7 +2,7 @@ Scrape the Public Papers of the Presidents: The American Presidency Project
 ================
 Cody A. Drolc
 
-This document presents a function for scraping the Public Papers of the Presidents. The scraper relies on UCSB's The [American Presidency Project](https://www.presidency.ucsb.edu/) (APP) to create a data frame with details such as the president, whether the document comes from the Vice President or First Lady, and the whole document text.
+This document presents a function for scraping the Public Papers of the Presidents. The scraper relies on UCSB's [The American Presidency Project](https://www.presidency.ucsb.edu/) (APP) to create a data frame with details such as the president, whether the document comes from the Vice President or First Lady, and the whole document text.
 
 The function was recently updated to work with the APP's website overhaul. The information that is pulled is not perfectly clean, but it provides a base for either creating a corpus or doing more complex text analyses. Note that some public papers do not pull perfectly.
 
