@@ -16,20 +16,20 @@ pull_cra <- function(cn) {
     stop("Control number must be 6 digits")
   } else {
     page <- read_html(paste0("https://www.gao.gov/fedrules/", cn)) # Fill control number
-    table <- html_table(page, fill = TRUE) # Find only number on page
-    if(length(table) == 0) { # No data if control number is not used
+    table <- html_table(page, fill = TRUE)                         # Find only table on page
+    if(length(table) == 0) {                                       # No data if control number is not used
       warning("No data found")
       return(data.frame(control_number = cn,
                         no_data = 1))
     } else {
-      table <- table[[1]] %>% # Table to data frame
+      table <- table[[1]] %>%                                      # Table to data frame
         spread(X1, X2)
-      names <- colnames(table) %>% # Create acceptable names
+      names <- colnames(table) %>%                                 # Create acceptable names
         str_remove_all(":|\\.|-") %>% 
         str_replace_all(" ", "_") %>%
         tolower()
       names(table) <- names
-      table <- table %>% mutate(control_number, as.character) # Treat as character
+      table <- table %>% mutate(control_number, as.character)      # Treat as character
       return(table)
     }
   }
